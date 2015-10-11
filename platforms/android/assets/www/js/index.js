@@ -59,6 +59,10 @@ var app = {
 	hideLoading:function(){
 		$.mobile.loading( "hide" );
 	},
+	errormessage:function(){
+		var errorAudioPath=(cordova.file.applicationDirectory+"www/audio/error.flac");
+		app.playAudio(errorAudioPath);
+	},
     takePicture: function(){
 		console.log("take picture");		
 
@@ -108,6 +112,7 @@ var app = {
 		console.log("upload error source " + error.source);
 		console.log("upload error target " + error.target);
 		app.hideLoading();
+		app.errormessage();
 	},
 
 	getSentenceToSpeak:function(labelsJSON){
@@ -162,6 +167,7 @@ var app = {
 				console.log("download error target " + error.target);
 				console.log("error code" + error.code);
 				app.hideLoading();
+				app.errormessage();
 			},
 			false
 		);
