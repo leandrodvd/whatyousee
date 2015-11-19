@@ -94,7 +94,8 @@ var app = {
 		options.mimeType="image/jpeg";
 
 		var ft = new FileTransfer();
-		ft.upload(imageURI,"http://visual-recognition-nodejs-ldavid.mybluemix.net", app.getLabelsSuccess, app.getLabelsFail, options);
+		//ft.upload(imageURI,"http://visual-recognition-nodejs-ldavid.mybluemix.net", app.getLabelsSuccess, app.getLabelsFail, options);
+		ft.upload(imageURI,"http://192.168.0.101:3000", app.getLabelsSuccess, app.getLabelsFail, options);
 	},
 
 	getLabelsSuccess:function(r) {
@@ -146,7 +147,8 @@ var app = {
 	},
 	downloadAudioFile:function(sentence,calback){
 		//http://text-to-speech-demo.mybluemix.net/api/synthesize?voice=en-US_MichaelVoice&text=test&download=true&accept=audio/wav
-		var uri = encodeURI("http://text-to-speech-nodejs-ldavid.mybluemix.net/api/synthesize?voice=en-US_MichaelVoice&text="+sentence+"&download=true&accept=audio/flac");
+		//var uri = encodeURI("http://text-to-speech-nodejs-ldavid.mybluemix.net/api/synthesize?voice=en-US_MichaelVoice&text="+sentence+"&download=true&accept=audio/flac");
+		var uri = encodeURI("http://192.168.0.101:3000/api/synthesize?voice=en-US_MichaelVoice&text="+sentence+"&download=true&accept=audio/flac");
 		var audioCachePath=cordova.file.cacheDirectory+app.makeid()+".flac";
 		
 		console.log("Audio Download URI:"+uri);
