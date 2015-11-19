@@ -95,7 +95,7 @@ var app = {
 
 		var ft = new FileTransfer();
 		//ft.upload(imageURI,"http://visual-recognition-nodejs-ldavid.mybluemix.net", app.getLabelsSuccess, app.getLabelsFail, options);
-		ft.upload(imageURI,"http://192.168.0.101:3000", app.getLabelsSuccess, app.getLabelsFail, options);
+		ft.upload(imageURI,"http://192.168.0.101:3000/api/imagesynthesize", app.getLabelsSuccess, app.getLabelsFail, options);
 	},
 
 	getLabelsSuccess:function(r) {
