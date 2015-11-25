@@ -17,6 +17,7 @@
  * under the License.
  */
 var app = {
+	serverURL:"http://192.168.0.102:3000",
     // Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -50,9 +51,7 @@ var app = {
 		app.playAudio(welcomeAudioPath);
 	},
 	showLoading:function(){
-		 
-			$.mobile.loading('show');
-
+		$.mobile.loading('show');
 		var analizingAudioPath=(cordova.file.applicationDirectory+"www/audio/analizing.flac");
 		app.playAudio(analizingAudioPath);
 	},
@@ -65,7 +64,6 @@ var app = {
 	},
     takePicture: function(){
 		console.log("take picture");		
-
 		navigator.camera.getPicture(app.onTakePictureSuccess, app.onTakePictureFail, 
 			{ 	
 				quality: 50,
@@ -79,14 +77,15 @@ var app = {
 		app.getLabels(imageData);
 	},
 	onTakePictureFail:function(message) {
-		alert('Failed to take picture because: ' + message);
+		var errorAudioPath=(cordova.file.applicationDirectory+"www/audio/picturefail.flac");
+		app.playAudio(errorAudioPath);
+		//alert('Failed to take picture because: ' + message);
 	},
 	authHeaderValue: function(username, password) {
 		var tok = username + ':' + password;
 		var hash = btoa(tok);
 		return "Basic " + hash;
 	},
-
 	getLabels:function(imageURI) {
 		var options = new FileUploadOptions();
 		options.fileKey="image";
@@ -95,7 +94,7 @@ var app = {
 
 		var ft = new FileTransfer();
 		//ft.upload(imageURI,"http://visual-recognition-nodejs-ldavid.mybluemix.net", app.getLabelsSuccess, app.getLabelsFail, options);
-		ft.upload(imageURI,"http://192.168.0.101:3000/api/imagesynthesize", app.getLabelsSuccess, app.getLabelsFail, options);
+		ft.upload(imageURI,app.serverURL+"/api/visual-recognition", app.getLabelsSuccess, app.getLabelsFail, options);
 	},
 
 	getLabelsSuccess:function(r) {
@@ -122,14 +121,15 @@ var app = {
 		for (var i=0;i<labelsJSON.length;i++){
 			console.log("label_name:"+labelsJSON[i].label_name);
 			if(i==0){
-				sentence = "This is what I see in the picture: " + labelsJSON[i].label_name;
+				//first label
+				sentence = "This is what I see in the picture and the corresponding scores: " + labelsJSON[i].label_name + ", "+Math.round(labelsJSON[i].label_score*100) + " percent";
 			}
 			else if(i==labelsJSON.length-1){
 				//last label
-				sentence=sentence+", and, " + labelsJSON[i].label_name;
+				sentence=sentence+", and, " + labelsJSON[i].label_name  + ", "+Math.round(labelsJSON[i].label_score*100) + " percent";
 			}
 			else{
-				sentence=sentence+", " + labelsJSON[i].label_name;
+				sentence=sentence+", " + labelsJSON[i].label_name  + ", "+Math.round(labelsJSON[i].label_score*100) + " percent";
 			}
 			
 		}
@@ -148,7 +148,7 @@ var app = {
 	downloadAudioFile:function(sentence,calback){
 		//http://text-to-speech-demo.mybluemix.net/api/synthesize?voice=en-US_MichaelVoice&text=test&download=true&accept=audio/wav
 		//var uri = encodeURI("http://text-to-speech-nodejs-ldavid.mybluemix.net/api/synthesize?voice=en-US_MichaelVoice&text="+sentence+"&download=true&accept=audio/flac");
-		var uri = encodeURI("http://192.168.0.101:3000/api/synthesize?voice=en-US_MichaelVoice&text="+sentence+"&download=true&accept=audio/flac");
+		var uri = encodeURI(app.serverURL+"/api/synthesize?voice=en-US_MichaelVoice&text="+sentence+"&download=true&accept=audio/flac");
 		var audioCachePath=cordova.file.cacheDirectory+app.makeid()+".flac";
 		
 		console.log("Audio Download URI:"+uri);
